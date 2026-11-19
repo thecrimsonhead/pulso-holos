@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pulso | HOLOS</title>
+<meta name="theme-color" content="#071b4a">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#071b4a; --deep:#040c24; --lime:#c2f970; --rose:#ce2d4f;
+  --ink:#e8ecf4; --ink-2:#aeb8cd; --muted:#8a95b0;
+  --accent:#b8e57e; --accent-bg:rgba(194,249,112,.10); --accent-line:rgba(194,249,112,.45);
+  --line:rgba(174,184,205,.20); --raised:rgba(255,255,255,.045); --err:#f2a3a3;
+  --font:"Outfit",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(55% 40% at 92% 4%,rgba(194,249,112,.12),transparent 62%),radial-gradient(50% 45% at 0% 96%,rgba(206,45,79,.15),transparent 64%),linear-gradient(165deg,#0b2259 0%,#071b4a 38%,#050f2e 78%,#040c24 100%) fixed var(--deep)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;max-width:560px;margin:0 auto}
+.mark{height:40px;width:auto;color:var(--ink)}
+.who{font-size:12.5px;color:var(--muted)}
+.who button{background:none;border:none;color:var(--accent);font:inherit;cursor:pointer;margin-left:6px}
+main{max-width:560px;margin:0 auto;padding:10px 20px 40px;min-height:calc(100vh - 60px);display:flex;flex-direction:column;justify-content:center}
+.tag{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+h1{font-size:clamp(1.5rem,6vw,2rem);font-weight:700;line-height:1.2;letter-spacing:-.015em;margin-bottom:22px;text-wrap:balance}
+p.sub{color:var(--ink-2);font-size:15px;line-height:1.6;margin-bottom:22px}
+.inp{width:100%;background:transparent;border:none;border-bottom:2px solid rgba(106,122,166,.9);color:var(--ink);font:500 1.3rem var(--font);padding:10px 2px;outline:none;border-radius:0}
+.inp:focus{border-bottom-color:var(--accent)}
+textarea.inp{min-height:110px;resize:none;font-size:1.15rem;line-height:1.45}
+.count{font-size:12.5px;color:var(--muted);margin-top:8px;text-align:right}
+.ops{display:flex;flex-direction:column;gap:10px}
+.op{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--raised);border:1.5px solid var(--line);color:var(--ink);border-radius:14px;padding:14px;font:500 16px/1.35 var(--font);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.op:hover{border-color:var(--accent-line)}
+.op .k{flex:none;width:26px;height:26px;border-radius:6px;border:1.5px solid rgba(106,122,166,.9);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2)}
+.op.sel{border-color:var(--accent-line);background:var(--accent-bg)}
+.op.sel .k{background:var(--accent);border-color:var(--accent);color:var(--navy)}
+.scale{display:grid;grid-template-columns:repeat(auto-fit,minmax(44px,1fr));gap:8px}
+.scale .op{justify-content:center;padding:14px 0;font-weight:700;font-size:18px}
+.scale-lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:var(--navy);border:none;border-radius:10px;padding:14px 22px;font:700 16px var(--font);cursor:pointer;margin-top:22px;align-self:flex-start}
+.btn[disabled]{opacity:.5;cursor:default}
+.err{color:var(--err);font-size:14px;margin-top:12px;min-height:18px}
+.wait{text-align:center;align-items:center}
+.pulse{width:14px;height:14px;border-radius:50%;background:var(--lime);margin:0 auto 22px;box-shadow:0 0 0 0 rgba(194,249,112,.6);animation:p 1.8s infinite}
+@keyframes p{70%{box-shadow:0 0 0 18px rgba(194,249,112,0)}100%{box-shadow:0 0 0 0 rgba(194,249,112,0)}}
+.ok{width:58px;height:58px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin:0 auto 20px}
+.ok svg{width:28px;height:28px;color:var(--navy)}
+.link{background:none;border:none;color:var(--accent);font:600 14px var(--font);cursor:pointer;margin-top:16px;text-decoration:underline;text-underline-offset:3px}
+.copybox{white-space:pre-wrap;background:rgba(194,249,112,.07);border:1.5px dashed var(--accent-line);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.5;color:var(--ink);user-select:all;-webkit-user-select:all}
+.off{font-size:12.5px;color:var(--err);text-align:center;margin-top:16px}
+/* instrucciones */
+.steps{list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:12px}
+.steps li{counter-increment:st;display:flex;gap:12px;font-size:17px;line-height:1.4}
+.steps li::before{content:counter(st);flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent-bg);border:1.5px solid var(--accent-line);color:var(--accent);font-weight:700;font-size:14px;display:grid;place-items:center}
+/* calificar al compañero: todo en una pantalla */
+.rate h1{font-size:1.35rem;margin-bottom:14px}
+.rate label{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 2px}
+.rate .inp{font-size:1.05rem;padding:7px 2px}
+.rate textarea.inp{min-height:54px;font-size:1rem}
+.rate .scale{grid-template-columns:repeat(5,1fr);margin-top:4px}
+.rate .scale .op{padding:10px 0}
+.rate .btn{margin-top:14px;width:100%}
+/* wordle */
+.wd{display:flex;flex-direction:column;align-items:center}
+.wd .hint{font-size:15px;line-height:1.4;color:var(--ink-2);text-align:center;margin:2px 0 12px;min-height:42px}
+.wd .prog{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.wg{display:grid;gap:5px;margin-bottom:12px}
+.wr{display:grid;gap:5px}
+.wc{width:44px;height:44px;border:2px solid rgba(106,122,166,.6);border-radius:6px;display:grid;place-items:center;font-size:21px;font-weight:800;text-transform:uppercase}
+.wc.f{border-color:var(--ink-2)}
+.wc.g{background:#5fae6b;border-color:#5fae6b;color:#fff}
+.wc.y{background:#d3a73a;border-color:#d3a73a;color:#fff}
+.wc.x{background:#3a4566;border-color:#3a4566;color:#cfd6e6}
+.wr.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.kb{display:flex;flex-direction:column;gap:6px;width:100%;max-width:440px}
+.kb div{display:flex;gap:4px;justify-content:center}
+.kb button{flex:1;min-width:0;height:46px;border:none;border-radius:6px;background:#56607e;color:#fff;font:700 15px var(--font);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.kb button.w{flex:1.6;font-size:12px}
+.kb button.g{background:#5fae6b} .kb button.y{background:#d3a73a} .kb button.x{background:#2a3350;color:#8a95b0}
+.wmsg{font-size:15px;min-height:20px;margin-bottom:8px;color:var(--accent);text-align:center}
+@media (max-height:700px){.wc{width:38px;height:38px;font-size:18px}.kb button{height:40px}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <svg class="mark" id="mk" aria-label="HOLOS"></svg>
+  <span class="who" id="who"></span>
+</header>
+<main id="app"></main>
+
+<script>
+const API = "api.php";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = { get(k){ try { return localStorage.getItem("hv_"+k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem("hv_"+k, v); } catch(e){} } };
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+const L = "ABCDEFGHIJ";
+
+let client = store.get("client");
+if (!client){ client = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36)).replace(/[^a-z0-9]/gi,"").toLowerCase().slice(0,32); store.set("client", client); }
+let name = store.get("name") || "";
+let current = null, round = 0, choice = null, editing = false, fails = 0;
+const pkey = () => current ? current.id + ":" + round : "";
+const voted = () => { try { return JSON.parse(store.get("voted") || "{}"); } catch(e){ return {}; } };
+
+function showWho(){
+  $("#who").innerHTML = name ? `${esc(name)}<button type="button" id="chg">cambiar</button>` : "";
+  const b = $("#chg"); if (b) b.onclick = () => { name = ""; store.set("name",""); render(); };
+}
+
+function askName(){
+  $("#app").className = "";
+  $("#app").innerHTML = `<div class="tag">Pulso · Taller Emprende</div>
+    <h1>¿Cómo te llamas?</h1><p class="sub">Así sabemos quién participa. Solo lo ve Alan.</p>
+    <input class="inp" id="nm" maxlength="40" placeholder="Nombre y apellido" autocomplete="name">
+    <button class="btn" id="go">Entrar</button><div class="err" id="er"></div>`;
+  const go = () => { const v = $("#nm").value.trim(); if (v.split(/\s+/).length < 2){ $("#er").textContent = "Escribe tu nombre y apellido."; return; } name = v; store.set("name", v); showWho(); render(); };
+  $("#go").onclick = go; $("#nm").addEventListener("keydown", e => { if (e.key === "Enter") go(); }); $("#nm").focus();
+}
+
+function render(){
+  showWho();
+  if (!name) return askName();
+  const p = current;
+  if (!p){
+    $("#app").className = "wait";
+    $("#app").innerHTML = `<div class="pulse"></div><h1>Mira la pantalla de Alan.</h1><p class="sub">Cuando haya una pregunta, aparece aquí sola. No cierres esta página.</p>`;
+    return;
+  }
+  const isLink = p.text && /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}\/\S*$/i.test(p.text.trim());
+  if (isLink){
+    const url = /^https?:/i.test(p.text.trim()) ? p.text.trim() : "https://" + p.text.trim();
+    $("#app").className = "";
+    $("#app").innerHTML = `<div class="tag">Pulso · Abre este link</div><h1>${esc(p.q)}</h1>
+      <a class="btn" href="${esc(url)}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;margin-top:8px">Abrir</a>
+      <p class="sub" style="margin-top:14px">${esc(url.replace(/^https?:\/\//,""))}</p><p class="sub" style="font-size:13.5px">Se abre en otra pestaña. Regresa aquí cuando termines.</p>`;
+    return;
+  }
+  if (p.type === "copy" || (p.text && !(p.options||[]).length && p.type !== "scale")){
+    $("#app").className = "";
+    $("#app").innerHTML = `<div class="tag">Pulso · Para copiar</div><h1>${esc(p.q)}</h1>
+      <div class="copybox" id="cb">${esc(p.text)}</div>
+      <button class="btn" id="cp">Copiar mensaje</button><p class="sub" id="cpm" style="margin-top:14px">Pégalo en claude.ai y cambia lo que está entre [corchetes] por lo de tu negocio.</p><p class="sub" style="font-size:13.5px">¿No ves el texto? Ábrelo en holos.team/emprende/claude</p>`;
+    $("#cp").onclick = async () => {
+      try { await navigator.clipboard.writeText(p.text); $("#cp").textContent = "Copiado"; }
+      catch(e){ const r = document.createRange(); r.selectNodeContents($("#cb")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); $("#cpm").textContent = "Ya quedó seleccionado: mantén presionado y elige Copiar."; }
+    };
+    return;
+  }
+  const kind = (p.type === "text" && (p.options||[])[0] || "").startsWith("@") ? p.options[0] : "";
+  if (kind === "@info"){
+    $("#app").className = "";
+    $("#app").innerHTML = `<div class="tag">Pulso · Instrucciones</div><h1>${esc(p.q)}</h1><ol class="steps">${p.options.slice(1).map(o => `<li>${esc(o)}</li>`).join("")}</ol>`;
+    return;
+  }
+  if (kind === "@secret"){
+    const cards = p.options.slice(1); let hsh = 0; for (const ch of client + ":" + round) hsh = (hsh*31 + ch.charCodeAt(0)) >>> 0;
+    const card = cards[hsh % cards.length];
+    $("#app").className = "";
+    $("#app").innerHTML = `<div class="tag">Pulso · Solo para ti</div><h1>${esc(p.q)}</h1>
+      <div class="copybox" style="user-select:none;-webkit-user-select:none;font-size:22px;font-weight:700;text-align:center;padding:26px 18px">${esc(card)}</div>
+      <p class="sub" style="margin-top:16px">Cuando te toque ser cliente, usa esta objeción cuando te digan el precio o te pidan la venta. No se la enseñes a tu pareja.</p>`;
+    return;
+  }
+  const mine = voted()[pkey()];
+  if (kind === "@wordle") return wordle(p, mine);
+  if (kind === "@rate" && (mine === undefined || editing)) return rateForm(p);
+  if (kind === "@survey" && (mine === undefined || editing)) return surveyForm(p);
+  if (mine !== undefined && !editing){
+    $("#app").className = "wait";
+    $("#app").innerHTML = `<div class="ok">${CHECK}</div><h1>Respuesta enviada.</h1><p class="sub">${kind === "@rate" ? rateSummary(mine) : kind === "@survey" ? "Gracias. Tu opinión le llega directo a Alan." : `Tu respuesta: <b>${esc(mine)}</b>`}${kind === "@survey" ? "" : "<br>Mira los resultados en la pantalla."}</p><button class="link" id="ed">Cambiar mi respuesta</button>`;
+    $("#ed").onclick = () => { editing = true; choice = mine; render(); };
+    return;
+  }
+  $("#app").className = "";
+  let h = `<div class="tag">${p.type === "quiz" ? "Pulso · Quiz" : "Pulso"}</div><h1>${esc(p.q)}</h1>`;
+  if (p.type === "choice" || p.type === "quiz"){
+    h += `<div class="ops">${p.options.map((o,i) => `<button type="button" class="op${choice===o?" sel":""}" data-v="${esc(o)}"><span class="k">${L[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  } else if (p.type === "scale"){
+    let nums = ""; for (let n = p.min; n <= p.max; n++) nums += `<button type="button" class="op${String(choice)===String(n)?" sel":""}" data-v="${n}">${n}</button>`;
+    h += `<div class="scale">${nums}</div><div class="scale-lbl"><span>${esc(p.minLbl)}</span><span>${esc(p.maxLbl)}</span></div>`;
+  } else {
+    const isW = p.type === "words";
+    h += isW ? `<input class="inp" id="tx" maxlength="${p.max_len}" placeholder="Una o dos palabras" value="${esc(choice||"")}">`
+             : `<textarea class="inp" id="tx" maxlength="${p.max_len}" placeholder="Escribe aquí">${esc(choice||"")}</textarea>`;
+    h += `<div class="count"><span id="cn">0</span> / ${p.max_len}</div>`;
+  }
+  h += `<button class="btn" id="send" ${choice===null||choice===""?"disabled":""}>Enviar</button><div class="err" id="er"></div>`;
+  $("#app").innerHTML = h;
+  $("#app").querySelectorAll(".op").forEach(b => b.onclick = () => {
+    choice = b.dataset.v; $("#app").querySelectorAll(".op").forEach(x => x.classList.toggle("sel", x === b)); $("#send").disabled = false;
+  });
+  const tx = $("#tx");
+  if (tx){ const upd = () => { choice = tx.value; $("#cn").textContent = tx.value.length; $("#send").disabled = !tx.value.trim(); }; tx.oninput = upd; upd();
+    tx.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && tx.value.trim()){ e.preventDefault(); send(); } }); }
+  $("#send").onclick = send;
+}
+
+function surveyForm(p){
+  const qs = p.options.slice(1), sc = {};
+  $("#app").className = "rate";
+  $("#app").innerHTML = `<div class="tag">Pulso · Privado, solo lo ve Alan</div><h1>${esc(p.q)}</h1>
+    ${qs.map((q,i) => `<label>${esc(q)}</label><div class="scale" data-q="${i}">${[1,2,3,4,5].map(n => `<button type="button" class="op" data-v="${n}">${n}</button>`).join("")}</div>`).join("")}
+    <div class="scale-lbl" style="margin-top:4px"><span>1 nada</span><span>5 muchísimo</span></div>
+    <label for="sc">Comentarios libres</label><textarea class="inp" id="sc" maxlength="800" placeholder="Lo que quieras decirle a Alan"></textarea>
+    <button class="btn" id="send" disabled>Enviar</button><div class="err" id="er"></div>`;
+  const ok = () => { $("#send").disabled = Object.keys(sc).length < qs.length; };
+  $("#app").querySelectorAll(".scale").forEach(row => row.querySelectorAll(".op").forEach(b => b.onclick = () => {
+    sc[row.dataset.q] = +b.dataset.v; row.querySelectorAll(".op").forEach(x => x.classList.toggle("sel", x === b)); ok(); }));
+  $("#send").onclick = () => { choice = JSON.stringify({ s: qs.map((q,i) => sc[i]), c: $("#sc").value.trim() }); send(); };
+}
+function rateSummary(m){ try { const o = JSON.parse(m); return `Calificaste a <b>${esc(o.p)}</b> con <b>${o.s}</b> de 5.`; } catch(e){ return ""; } }
+function rateForm(p){
+  let prev = {}; try { prev = JSON.parse(voted()[pkey()] || "{}"); } catch(e){}
+  let sc = prev.s || 0;
+  $("#app").className = "rate";
+  let nums = ""; for (let n = 1; n <= 5; n++) nums += `<button type="button" class="op${sc===n?" sel":""}" data-v="${n}">${n}</button>`;
+  $("#app").innerHTML = `<div class="tag">Pulso · Califica a tu compañero</div><h1>${esc(p.q)}</h1>
+    <label for="rp">Tu compañero</label><input class="inp" id="rp" maxlength="40" placeholder="Nombre" value="${esc(prev.p||"")}">
+    <label for="rf">Su frase, como la recuerdas</label><textarea class="inp" id="rf" maxlength="140" placeholder="Sin preguntarle">${esc(prev.f||"")}</textarea>
+    <label>¿Conecta? 1 nada · 5 me la quedo</label><div class="scale">${nums}</div>
+    <label for="rm">Una sola mejora</label><input class="inp" id="rm" maxlength="100" placeholder="Qué le cambiarías" value="${esc(prev.m||"")}">
+    <button class="btn" id="send" disabled>Enviar</button><div class="err" id="er"></div>`;
+  const ok = () => { $("#send").disabled = !($("#rp").value.trim() && $("#rf").value.trim() && sc); };
+  $("#app").querySelectorAll(".op").forEach(b => b.onclick = () => { sc = +b.dataset.v; $("#app").querySelectorAll(".op").forEach(x => x.classList.toggle("sel", x === b)); ok(); });
+  ["#rp","#rf","#rm"].forEach(k => $(k).oninput = ok); ok();
+  $("#send").onclick = () => { choice = JSON.stringify({ p: $("#rp").value.trim(), f: $("#rf").value.trim(), s: sc, m: $("#rm").value.trim() }); send(); };
+}
+
+/* ---------- wordle ---------- */
+const dec = e => { try { return decodeURIComponent(escape(atob(e))).split("").reverse().join(""); } catch(x){ return ""; } };
+let W = null;
+function wordle(p, mine){
+  const key = "wd_" + pkey();
+  if (!W || W.key !== key){
+    const o = p.options.slice(1), words = [];
+    for (let i = 0; i + 1 < o.length; i += 2) words.push({ w: dec(o[i]).toUpperCase(), h: o[i+1] });
+    let saved = null; try { saved = JSON.parse(store.get(key) || "null"); } catch(e){}
+    W = saved && saved.words && saved.words.length === words.length ? Object.assign(saved, { key, words }) : { key, words, k:0, rows:[], cur:"", t0: Date.now(), done:[], tries:0 };
+  }
+  const save = () => store.set(key, JSON.stringify({ k:W.k, rows:W.rows, cur:"", t0:W.t0, done:W.done, tries:W.tries, words:W.words, end:W.end }));
+  const finished = W.k >= W.words.length;
+  if (finished){
+    const solved = W.done.filter(Boolean).length, secs = Math.round(((W.end || Date.now()) - W.t0)/1000);
+    $("#app").className = "wait";
+    $("#app").innerHTML = `<div class="ok">${CHECK}</div><h1>${solved} de ${W.words.length} palabras.</h1><p class="sub">${W.tries} intentos · ${Math.floor(secs/60)}:${String(secs%60).padStart(2,"0")}<br>Mira el podio en la pantalla.</p>
+      <p class="sub" style="font-size:14px">${W.words.map((x,i) => `${W.done[i] ? "✓" : "✗"} ${esc(x.w)}`).join(" · ")}</p><div class="err" id="er"></div>`;
+    if (mine === undefined){ choice = JSON.stringify({ r: solved, i: W.tries, s: secs }); sendQuiet(); }
+    return;
+  }
+  const cw = W.words[W.k], L = cw.w.length;
+  const score = (g, w) => { const r = Array(L).fill("x"), pool = {}; for (let i = 0; i < L; i++){ if (g[i] === w[i]) r[i] = "g"; else pool[w[i]] = (pool[w[i]]||0) + 1; } for (let i = 0; i < L; i++){ if (r[i] !== "g" && pool[g[i]]){ r[i] = "y"; pool[g[i]]--; } } return r; };
+  const keyState = {}, RK = { x:1, y:2, g:3 }; W.rows.forEach(g => score(g, cw.w).forEach((c,i) => { const k = g[i]; if (!keyState[k] || RK[c] > RK[keyState[k]]) keyState[k] = c; }));
+  let grid = "";
+  for (let r = 0; r < 6; r++){
+    const g = W.rows[r], live = r === W.rows.length, sc = g ? score(g, cw.w) : null;
+    grid += `<div class="wr" ${live ? 'id="wl"' : ""} style="grid-template-columns:repeat(${L},auto)">`;
+    for (let c = 0; c < L; c++){ const ch = g ? g[c] : (live ? (W.cur[c]||"") : ""); grid += `<div class="wc ${sc ? sc[c] : (ch ? "f" : "")}">${ch}</div>`; }
+    grid += `</div>`;
+  }
+  const rowsK = ["QWERTYUIOP","ASDFGHJKLÑ","ZXCVBNM"];
+  const kb = rowsK.map((r,ri) => `<div>${ri === 2 ? `<button class="w" data-k="ENTER">ENVIAR</button>` : ""}${r.split("").map(k => `<button class="${keyState[k]||""}" data-k="${k}">${k}</button>`).join("")}${ri === 2 ? `<button class="w" data-k="DEL">⌫</button>` : ""}</div>`).join("");
+  $("#app").className = "";
+  $("#app").innerHTML = `<div class="wd"><div class="prog">Palabra ${W.k+1} de ${W.words.length} · ${L} letras</div><div class="hint">${esc(cw.h)}</div><div class="wg">${grid}</div><div class="wmsg" id="wm"></div><div class="kb">${kb}</div></div>`;
+  const press = k => {
+    if (W.k >= W.words.length) return;
+    if (k === "DEL"){ W.cur = W.cur.slice(0,-1); return wordle(p, mine); }
+    if (k === "ENTER"){
+      if (W.cur.length < L){ const wl = $("#wl"); wl.classList.remove("shake"); void wl.offsetWidth; wl.classList.add("shake"); $("#wm").textContent = `Faltan letras: son ${L}.`; return; }
+      const g = W.cur; W.rows.push(g); W.cur = ""; W.tries++;
+      const win = g === cw.w, lost = !win && W.rows.length >= 6;
+      if (win || lost){
+        W.done[W.k] = win; save(); wordle(p, mine);
+        $("#wm").textContent = win ? "¡Esa es!" : `Era ${cw.w}.`;
+        document.onkeydown = null;
+        setTimeout(() => { W.k++; W.rows = []; if (W.k >= W.words.length) W.end = Date.now(); save(); wordle(p, voted()[pkey()]); }, 1400);
+        return;
+      }
+      save(); return wordle(p, mine);
+    }
+    if (W.cur.length < L && /^[A-ZÑ]$/.test(k)){ W.cur += k; wordle(p, mine); }
+  };
+  $("#app").querySelectorAll(".kb button").forEach(b => b.onclick = () => press(b.dataset.k));
+  document.onkeydown = e => { if (e.metaKey || e.ctrlKey || e.altKey) return; const k = e.key === "Enter" ? "ENTER" : e.key === "Backspace" ? "DEL" : e.key.toUpperCase(); if (k === "ENTER" || k === "DEL" || /^[A-ZÑ]$/.test(k)){ e.preventDefault(); press(k); } };
+}
+async function sendQuiet(){
+  const p = current, fd = new FormData();
+  fd.append("action","live_vote"); fd.append("poll", p.id); fd.append("client", client); fd.append("name", name); fd.append("answer", choice);
+  for (let k = 0; k < 4; k++){
+    try { const j = await (await fetch(API, { method:"POST", body:fd })).json(); if (!j.ok) throw new Error(j.error); const v = voted(); v[pkey()] = choice; store.set("voted", JSON.stringify(v)); return; }
+    catch(e){ const er = $("#er"); if (er) er.textContent = "Reintentando enviar tu resultado..."; await new Promise(r => setTimeout(r, 1500)); }
+  }
+  const er = $("#er"); if (er) er.textContent = "No se pudo enviar tu resultado. Avísale a Alan.";
+}
+
+async function send(){
+  const p = current; if (!p || choice === null || String(choice).trim() === "") return;
+  const b = $("#send"); b.disabled = true; b.textContent = "Enviando...";
+  const fd = new FormData();
+  fd.append("action","live_vote"); fd.append("poll", p.id); fd.append("client", client); fd.append("name", name); fd.append("answer", String(choice).trim());
+  try {
+    const j = await (await fetch(API, { method:"POST", body:fd })).json();
+    if (!j.ok) throw new Error(j.error || "Error");
+    const v = voted(); v[pkey()] = String(choice).trim(); store.set("voted", JSON.stringify(v));
+    editing = false; render();
+  } catch(e){
+    b.disabled = false; b.textContent = "Enviar";
+    $("#er").textContent = "No se envió: " + e.message + ". Intenta otra vez.";
+  }
+}
+
+/* auto-actualización: si subes una versión nueva de esta página, se recarga sola */
+const PV = "pv8";
+let lastCheck = Date.now();
+async function checkVersion(){
+  try {
+    const t = await (await fetch("pulso.html?_=" + Date.now(), { cache:"no-store" })).text();
+    if (t.includes("<title>Pulso") && !t.includes('const PV = "' + PV + '"')) location.replace("pulso.html?v=" + Date.now());
+  } catch(e){}
+}
+async function tick(){
+  if (Date.now() - lastCheck > 60000){ lastCheck = Date.now(); checkVersion(); }
+  try {
+    const j = await (await fetch(API + "?action=live_state&_=" + Date.now(), { cache:"no-store" })).json();
+    fails = 0; const off = document.querySelector(".off"); if (off) off.remove();
+    const id = j.poll ? j.poll.id + ":" + (j.round||0) : null, curId = current ? pkey() : null;
+    if (id !== curId){ document.onkeydown = null; current = j.poll; round = j.round || 0; choice = null; editing = false; render(); }
+  } catch(e){
+    if (++fails === 3 && !document.querySelector(".off")) $("#app").insertAdjacentHTML("beforeend", '<p class="off">Sin conexión. Reintentando...</p>');
+  }
+  setTimeout(tick, document.hidden ? 5000 : 2000);
+}
+
+/* logo */
+fetch("logo/holos-logo.svg").then(r => r.text()).then(t => {
+  const d = new DOMParser().parseFromString(t, "image/svg+xml").documentElement;
+  d.setAttribute("class","mark"); d.querySelector("path").setAttribute("fill","currentColor"); $("#mk").replaceWith(d);
+}).catch(() => {});
+
+render(); tick();
+</script>
+</body>
+</html>

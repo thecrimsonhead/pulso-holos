@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de funciones | HOLOS</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="deck.css?v=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="help">→ siguiente · ← anterior · N notas · F pantalla completa<br>T temporizador · 0 reiniciar · R revelar quiz</div>
+<script>
+window.SESSION = {
+  id: "cat",
+  title: "Catálogo de funciones Pulso",
+  minutes: 60,
+  slides: [
+  { type:"cover", time:"Min 0 a 1", eyebrow:"HOLOS · Pulso", title:"Catálogo de <em>funciones</em>", lead:"Cada diapositiva muestra un formato o un tipo de pregunta en vivo.", meta:[["Uso","Referencia interna"],["Motor","kit/presenta/deck.js"]], notes:`<p>Tipo <b>cover</b>.</p>` },
+  { type:"statement", time:"Min 1 a 2", eyebrow:"statement", title:"Una idea grande, <em>dicha en una línea.</em>", lead:"Para abrir o cerrar un bloque.", notes:`<p>Tipo <b>statement</b>. Campo size cambia el tamaño.</p>` },
+  { type:"stat", time:"Min 2 a 3", eyebrow:"stat", num:"<em>40%</em>", label:"del día se va en interrupciones", src:"Fuente obligatoria aquí", notes:`<p>Tipo <b>stat</b>. Siempre con fuente real.</p>` },
+  { type:"cards", time:"Min 3 a 4", eyebrow:"cards", title:"Tarjetas en columnas", cols:3, cards:[{k:"Uno",h:"Título",p:"Texto corto."},{k:"Dos",h:"Título",p:"Texto corto.",cls:"g"},{k:"Tres",h:"Título",p:"Texto corto.",cls:"r"}], notes:`<p><b>cards</b>: cols 2 a 5, cls g/y/r.</p>` },
+  { type:"list", time:"Min 4 a 5", eyebrow:"list", title:"Lista numerada", items:[["01","Primer punto","detalle"],["02","Segundo punto","detalle"],["03","Tercer punto","detalle"]], notes:`<p><b>list</b></p>` },
+  { type:"rules", time:"Min 5 a 6", eyebrow:"rules", title:"Reglas grandes en 2x2", items:[["1","Regla uno","Explicación."],["2","Regla dos","Explicación."],["3","Regla tres","Explicación."],["4","Regla cuatro","Explicación."]], notes:`<p><b>rules</b></p>` },
+  { type:"versus", time:"Min 6 a 7", eyebrow:"versus", title:"Comparar dos o tres cosas", cols:[{k:"Antes",tone:"lo",q:"Así se hace casi siempre.",p:"Nota."},{k:"Después",tone:"hi",q:"Así se hace bien.",p:"Nota."}], notes:`<p><b>versus</b>: 2 o 3 columnas, small:true para textos largos.</p>` },
+  { type:"beforeafter", time:"Min 7 a 8", eyebrow:"beforeafter", title:"Antes y después con conteo de palabras", rows:[{biz:"Ejemplo",antes:"Una frase larga y funcional que describe todas las características del producto sin decir nada.",despues:"Una frase corta que se siente."}], notes:`<p><b>beforeafter</b>: cuenta palabras solo (rojo si pasa de 12).</p>` },
+  { type:"circle", time:"Min 8 a 9", eyebrow:"circle", title:"Círculo que se arma por pasos", rows:[{id:"what",k:"Qué",p:"Primer paso con la flecha."},{id:"how",k:"Cómo",p:"Segundo paso."},{id:"why",k:"Por qué",p:"Tercer paso, resaltado."}], notes:`<p><b>circle</b>: aparece por pasos (data-b).</p>` },
+  { type:"brand", time:"Min 9 a 10", eyebrow:"brand", name:"Marca", lead:"Una marca por dentro.", what:"Qué vende.", how:"Cómo lo hace distinto.", why:"Por qué existe.", note:"Fuente.", notes:`<p><b>brand</b>: aparece por pasos.</p>` },
+  { type:"activity", time:"Min 10 a 13", minutes:3, eyebrow:"activity", title:"Ejercicio con temporizador", steps:["Paso uno.","Paso dos.","Paso tres."], where:"Dónde lo hacen.", notes:`<p><b>activity</b>: minutes activa el reloj (T, 0).</p>` },
+  { type:"activity", time:"Min 13 a 15", minutes:2, eyebrow:"push @info", title:"Instrucciones que llegan al celular", push:{ id:"cat-info", type:"text", q:"En tu sala", max_len:80, options:["@info","Paso uno en el celular.","Paso dos en el celular."] }, steps:["Las instrucciones también están en Pulso."], notes:`<p><b>push @info</b>: para salas de Zoom.</p>` },
+  { type:"activity", time:"Min 15 a 17", minutes:2, eyebrow:"push @secret", title:"Una tarjeta secreta distinta para cada quien", push:{ id:"cat-secret", type:"text", q:"Tu tarjeta secreta", max_len:80, options:["@secret","Carta A","Carta B","Carta C"] }, steps:["Cada celular recibe una al azar."], notes:`<p><b>push @secret</b>: juegos de roles.</p>` },
+  { type:"activity", time:"Min 17 a 18", eyebrow:"push copy", title:"Un link o un texto para copiar", push:{ id:"cat-link", type:"copy", q:"Abre este link", text:"https://holos.team" }, steps:["Si el texto es un link, sale botón Abrir."], notes:`<p><b>push copy</b></p>` },
+  { type:"poll", time:"Min 18 a 20", eyebrow:"choice", poll:{ id:"cat-choice", type:"choice", q:"Opción múltiple", options:["Opción A","Opción B","Opción C"] }, notes:`<p><b>choice</b></p>` },
+  { type:"poll", time:"Min 20 a 22", eyebrow:"quiz", poll:{ id:"cat-quiz1", type:"quiz", q:"Quiz con respuesta correcta (suma al ranking)", options:["Incorrecta","Correcta","Otra incorrecta"], correct:"Correcta", why:"Explicación al revelar con R." }, notes:`<p><b>quiz</b>: R revela. Cuenta para el ranking por aciertos y velocidad.</p>` },
+  { type:"poll", time:"Min 22 a 24", eyebrow:"quiz + quad (Eisenhower)", quad:{ x:["Urgente","No urgente"], y:["Importante","No importante"] },
+    poll:{ id:"cat-quad", type:"quiz", q:"Tu jefe te pide un reporte para mañana. ¿Dónde va?", options:["Hazlo ya","Agéndalo","Delégalo","Elimínalo"], correct:"Hazlo ya", why:"Urgente e importante." }, notes:`<p><b>quad</b>: las 4 opciones en orden: arriba izq, arriba der, abajo izq, abajo der. Funciona con choice o quiz.</p>` },
+  { type:"poll", time:"Min 24 a 26", eyebrow:"scale", poll:{ id:"cat-scale", type:"scale", q:"Del 1 al 10", min:1, max:10, minLbl:"nada", maxLbl:"mucho" }, notes:`<p><b>scale</b>: compare:"otro-id" muestra antes y después.</p>` },
+  { type:"poll", time:"Min 26 a 28", eyebrow:"words", poll:{ id:"cat-words", type:"words", q:"Una palabra", max_len:30 }, notes:`<p><b>words</b>: nube.</p>` },
+  { type:"poll", time:"Min 28 a 30", eyebrow:"text", poll:{ id:"cat-text", type:"text", q:"Respuesta abierta", max_len:140 }, notes:`<p><b>text</b>: muro.</p>` },
+  { type:"poll", time:"Min 30 a 32", eyebrow:"@rate", poll:{ id:"cat-rate", type:"text", q:"Califica a tu pareja", max_len:400, options:["@rate"] }, notes:`<p><b>@rate</b>: nombre, lo que recuerda, 1 a 5 y mejora.</p>` },
+  { type:"poll", time:"Min 32 a 36", eyebrow:"@wordle", poll:{ id:"cat-wordle", type:"text", q:"Wordle", max_len:80, options:["@wordle","RVVRUk9Q","Pista 1","RUNPRA==","Pista 2"] }, notes:`<p><b>@wordle</b>: cada palabra en base64 al revés. Podio en pantalla.</p>` },
+  { type:"poll", time:"Min 36 a 38", eyebrow:"names", names:"Sí, me apunto", poll:{ id:"cat-names", type:"choice", q:"¿Quién se apunta?", options:["Sí, me apunto","Hoy no"] }, notes:`<p><b>names</b>: lista en orden de quién se apuntó.</p>` },
+  { type:"poll", time:"Min 38 a 40", eyebrow:"@survey", poll:{ id:"cat-survey", type:"text", q:"Encuesta privada", max_len:1200, options:["@survey","Pregunta 1","Pregunta 2","Pregunta 3"] }, notes:`<p><b>@survey</b>: en pantalla solo el contador.</p>` },
+  { type:"ranking", time:"Min 40 a 42", eyebrow:"ranking", title:"Tabla de posiciones", lead:"Aciertos y velocidad en todos los quiz.", prize:"Premio para el <b>primer lugar</b>.", notes:`<p><b>ranking</b>: suma los quiz con correct (polls:[ids] para elegir cuáles). 1000 puntos por acierto inmediato, baja 10 por segundo, mínimo 500.</p>` }
+  ]
+};
+</script>
+<script src="deck.js?v=1"></script>
+</body>
+</html>
